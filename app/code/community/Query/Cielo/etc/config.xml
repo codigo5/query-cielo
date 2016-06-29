@@ -1,0 +1,283 @@
+<?xml version="1.0"?>
+
+<!--
+ * Query Commerce Cielo Module - payment method module for Magento,
+ * integrating the billing forms with a Cielo's gateway Web Service.
+ * Copyright (C) 2013  Fillipe Almeida Dutra
+ * Belo Horizonte, Minas Gerais - Brazil
+ * 
+ * Contact: lawsann@gmail.com
+ * Project link: http://code.google.com/p/magento-cielo/
+ * Group discussion: http://groups.google.com/group/cielo-magento
+ * 
+ * Team: 
+ * Fillipe Almeida Dutra - lawsann@gmail.com
+ * Hermes Luciano Monteiro Junior - hermeslmj@gmail.com
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+
+<config>
+	
+	<modules>
+		<Query_Cielo>
+			<version>1.7.0</version>
+		</Query_Cielo>
+	</modules>
+	
+	<global>
+		<models>
+			<Query_Cielo>
+				<class>Query_Cielo_Model</class>
+			</Query_Cielo>
+		</models>
+		<resources>
+			<Query_Cielo_setup>
+				<setup>
+					<module>Query_Cielo</module>
+				</setup>
+				<connection>
+					<use>core_setup</use>
+				</connection>
+			</Query_Cielo_setup>
+			<Query_Cielo_write>
+				<connection>
+					<use>core_write</use>
+				</connection>
+			</Query_Cielo_write>
+			<Query_Cielo_read>
+				<connection>
+					<use>core_read</use>
+				</connection>
+			</Query_Cielo_read>
+		</resources>
+		<helpers>
+			<Query_Cielo>
+				<class>Query_Cielo_Helper</class>
+			</Query_Cielo>
+		</helpers>
+		<blocks>
+			<Query_Cielo>
+				<class>Query_Cielo_Block</class>
+			</Query_Cielo>
+			<sales>
+				<rewrite>
+					<order_totals>Query_Cielo_Block_Sales_Order_Totals</order_totals>
+				</rewrite>
+			</sales>
+			<adminhtml>
+				<rewrite>
+					<sales_order_totals>Query_Cielo_Block_Adminhtml_Order_Totals</sales_order_totals>
+					<sales_order_invoice_totals>Query_Cielo_Block_Adminhtml_Order_Invoice_Totals</sales_order_invoice_totals>
+				</rewrite>
+			</adminhtml>
+		</blocks>
+		<sales>
+			<quote>
+				<totals>
+					<interest>
+						<class>Query_Cielo/quote_address_interest</class>
+						<after>shipping</after>
+						<before>grand_total</before>
+					</interest>
+				</totals>
+			</quote>
+			<order_invoice>
+				<totals>
+					<your_total>
+					<class>Query_Cielo/order_invoice_interest</class>
+					<after>shipping</after>
+					<before>grand_total</before>
+					</your_total>
+				</totals>
+			</order_invoice>
+		</sales>
+		<fieldsets>
+			<sales_convert_quote_address>
+				<interest>
+					<to_order>*</to_order>
+				</interest>
+				<base_interest>
+					<to_order>*</to_order>
+				</base_interest>
+			</sales_convert_quote_address>
+			<sales_convert_order>
+				<interest>
+					<to_invoice>*</to_invoice>
+					<to_shipment>*</to_shipment>
+					<to_cm>*</to_cm>
+				</interest>
+				<base_interest>
+					<to_invoice>*</to_invoice>
+					<to_shipment>*</to_shipment>
+					<to_cm>*</to_cm>
+				</base_interest>
+			</sales_convert_order>
+			<sales_convert_quote_payment>
+				<cc_owner_doc>
+					<to_order_payment>*</to_order_payment>
+				</cc_owner_doc>
+			</sales_convert_quote_payment>
+		</fieldsets>
+		<events>
+			<core_block_abstract_prepare_layout_before>
+				<observers>
+					<query_cielo_add_buttons>
+						<type>model</type>
+						<class>Query_Cielo/observer</class>
+						<method>addButtons</method>
+					</query_cielo_add_buttons>
+				</observers>
+			</core_block_abstract_prepare_layout_before>
+		</events>
+	</global>
+	
+	<frontend>
+		<routers>
+			<Query_Cielo>
+				<use>standard</use>
+				<args>
+					<module>Query_Cielo</module>
+					<frontName>querycielo</frontName>
+				</args>
+			</Query_Cielo>
+		</routers>
+		<layout>
+			<updates>
+				<Query_Cielo>
+					<file>query-cielo.xml</file>
+				</Query_Cielo>
+			</updates>
+		</layout>
+		<translate>
+			<modules>
+				<Query_Cielo>
+					<files>
+						<default>Query_Cielo.csv</default>
+					</files>
+				</Query_Cielo>
+			</modules>
+		</translate>
+	</frontend>
+	<admin>
+		<routers>
+			<Query_Cielo>
+				<use>admin</use>
+					<args>
+						<module>Query_Cielo</module>
+						<frontName>querycielo</frontName>
+					</args>
+			</Query_Cielo>
+		</routers>
+	</admin> 
+	<adminhtml>
+		<translate>
+			<modules>
+				<Query_Cielo>
+					<files>
+						<default>Query_Cielo.csv</default>
+					</files>
+				</Query_Cielo>
+			</modules>
+		</translate>
+		<events>
+			<!-- observer para cancelar um pedido na cielo quando cancelado via magento -->
+            <order_cancel_after>
+                <observers>
+                    <query_cielo_order_cancel>
+                        <type>model</type>
+                        <class>Query_Cielo/observer</class>
+                        <method>cancelOrder</method>
+                    </query_cielo_order_cancel>
+                </observers>
+            </order_cancel_after>
+			<!-- observer para cancelar um pedido na cielo quando reembolsado via magento -->
+            <sales_order_creditmemo_save_after>
+                <observers>
+                    <query_cielo_order_creditmemo>
+                        <type>model</type>
+                        <class>Query_Cielo/observer</class>
+                        <method>createCreditmemo</method>
+                    </query_cielo_order_creditmemo>
+                </observers>
+            </sales_order_creditmemo_save_after>
+		</events>
+		<acl>
+			<resources>
+				<admin>
+					<children>
+						<sales>
+							<children>
+								<order>
+									<children>
+										<actions>
+											<children>
+												<cielo-capture translate="title">
+													<title>Cielo - Capture</title>
+												</cielo-capture>
+												<cielo-cancel translate="title">
+													<title>Cielo - Cancel</title>
+												</cielo-cancel>
+												<cielo-consult translate="title">
+													<title>Cielo - Consult WebService</title>
+												</cielo-consult>
+											</children>
+										</actions>
+									</children>
+								</order>
+							</children>
+						</sales>
+					</children>
+				</admin>
+			</resources>
+		</acl>
+	</adminhtml>
+	
+	
+	<default>
+		<payment>
+			<Query_Cielo_Cc>
+				<model>Query_Cielo_Model_Cc</model>
+				<active>0</active>
+				<buypage>loja</buypage>
+				<environment>https://qasecommerce.cielo.com.br</environment>
+				<card_types>visa,mastercard,diners,discover,elo,amex,aura,jcb</card_types>
+				<auto_capture>1</auto_capture>
+				<autenticate>1</autenticate>
+				<ssl_file></ssl_file>
+				<title>Cartão de Crédito</title>
+				<max_parcels_number>1</max_parcels_number>
+				<installments_type>2</installments_type>
+				<auto_capture>1</auto_capture>
+				<cielo_number>1006993069</cielo_number>
+				<cielo_key>25fbb99741c739dd84d7b06ec78c9bac718838630f30b112d033ce2e621b34f3</cielo_key>
+			</Query_Cielo_Cc>
+		</payment>
+		<payment>
+			<Query_Cielo_Dc>
+				<model>Query_Cielo_Model_Dc</model>
+				<active>0</active>
+				<buypage>loja</buypage>
+				<environment>https://qasecommerce.cielo.com.br</environment>
+				<card_types>visa,mastercard</card_types>
+				<ssl_file></ssl_file>
+				<title>Cartão de Débito</title>
+				<auto_capture>1</auto_capture>
+				<cielo_number>1001734898</cielo_number>
+				<cielo_key>e84827130b9837473681c2787007da5914d6359947015a5cdb2b8843db0fa832</cielo_key>
+			</Query_Cielo_Dc>
+		</payment>
+	</default>
+
+</config>

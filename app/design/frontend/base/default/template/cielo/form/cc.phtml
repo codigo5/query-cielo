@@ -1,0 +1,279 @@
+<?php
+
+/*
+ * Query Commerce Cielo Module - payment method module for Magento,
+ * integrating the billing forms with a Cielo's gateway Web Service.
+ * Copyright (C) 2013  Fillipe Almeida Dutra
+ * Belo Horizonte, Minas Gerais - Brazil
+ * 
+ * Contact: lawsann@gmail.com
+ * Project link: http://code.google.com/p/magento-cielo/
+ * Group discussion: http://groups.google.com/group/cielo-magento
+ * 
+ * Team: 
+ * Fillipe Almeida Dutra - lawsann@gmail.com
+ * Hermes Luciano Monteiro Junior - hermeslmj@gmail.com
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+?>
+<?php
+	$baseUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN) . "frontend/default/default/images/cielo/";
+?>
+<style>
+	
+	.card-type-image
+	{
+		width: 52px;
+		border: 2px solid transparent;
+		background-color: transparent;
+		cursor: pointer;
+		padding: 2px;
+	}
+	
+	.card-type-image:hover
+	{
+		-webkit-border-radius: 5px;
+		-moz-border-radius: 5px;
+		border-radius: 5px;
+		border: 2px solid #C2D1E2;
+		background-color: #F1F4F8;
+	}
+	
+	.card-type-image.selected
+	{
+		-webkit-border-radius: 5px;
+		-moz-border-radius: 5px;
+		border-radius: 5px;
+		border: 2px solid #C2D1E2;
+		background-color: #F1F4F8;
+	}
+	
+	.card-data-form
+	{
+		display: none;
+	}
+
+</style>
+
+<fieldset class="form-list">
+	
+	<ul id="payment_form_Query_Cielo_Cc" style="display:none;">
+	<br>
+
+<?php
+	// maximo de parcelamento para as bandeiras
+	$cardsMaxInstallments = $this->getMaxCardsInstallments();
+	
+	$tokens = $this->getCieloTokens();
+	if($tokens && (count($tokens) > 0) && ($this->getConfigData('tokenize') == 1) && $this->getConfigData('buypage') == "loja")
+	{
+?>
+		<p><?php echo $this->__("Witch card do You want to use?"); ?></p>
+		<ul>
+<?php
+		
+		foreach ($tokens as $token)
+		{
+			$img = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN) . "frontend/default/default/images/cielo/" . $token['image'] . "";
+			$lastDigits = Mage::Helper('core')->decrypt($token['last_digits']);
+?>
+			<li style="margin-bottom: 20px;">
+				<table>
+					<tr>
+						<td style="width: 25px;">
+							<input name="payment[token]" 
+								   type="radio" 
+								   value="<?php echo $token['cc_type'] . '/' . $token['id']; ?>" 
+								   id="card-<?php echo $token['id']; ?>-tk" 
+								   onclick="queryCieloUpdateInstallments('<?php echo $token["cc_type"]; ?>','<?php echo $cardsMaxInstallments[$token["cc_type"]]; ?>'); showCardDataCc(false); unlockRequiredFields();"
+								   class="validate-one-required-by-name"
+								   style="margin-top: 3px;">
+						</td>
+						<td>
+							<label for="card-<?php echo $token['id']; ?>-tk" class="card-saved-label">
+								<img src="<?php echo $img; ?>" style="width: 40px;"> **** **** **** <?php echo $lastDigits; ?>
+							</label>
+						</td>
+					</tr>
+				</table>
+			</li>	
+<?php
+		}
+?>
+			<li>
+				<table style="margin: 25px 0 10px 0;">
+					<tr>
+						<td style="width: 25px;">
+							<input name="payment[token]" type="radio" value="" id="card-other" onclick="showCardDataCc(true); lockRequiredFields();">
+						</td>
+						<td>
+							<label for="card-other"><?php echo $this->__("Other card"); ?>: </label>
+						</td>
+					</tr>
+				</table>
+			</li>
+		</ul>
+
+<?php
+	}
+?>
+	<div id='card-data-cc'>
+		<input name="payment[cc_type]" 
+			   type="hidden"
+			   id="query-cielo-cc-type"
+			   class="required-entry">
+<?php
+
+	$cardsData = $this->getAllowedCards();
+	$size = count($cardsData);
+	
+	for($i = 0; $i < $size; $i++)
+	{
+		$type = $cardsData[$i]['value'];
+		$label = $cardsData[$i]['label'];
+		$img = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN) . "frontend/default/default/images/cielo/" . $cardsData[$i]['image'];
+		
+		// abre agrupamento de bandeiras
+	//	if($i % 3 == 0)
+	//	{
+
+?>
+
+
+	<!--	<li class="first">
+		<ul class="card-logo"> -->
+<?php
+		//}
+?>
+			<li style="width: 70px; float: left;">
+				<label for="card-<?php echo $type; ?>">
+					<img class="card-type-image" ccType="<?php echo $type; ?>" src="<?php echo $img; ?>" title="<?php echo $label; ?>" onclick="selectCardTypeCc(this); queryCieloUpdateInstallments('<?php echo $type; ?>','<?php echo $cardsMaxInstallments[$type]; ?>')"><br>
+					<!--
+					<input name="payment[cc_type]" 
+						   type="radio"
+						   value="<?php echo $type; ?>"
+						   id="card-<?php echo $type; ?>"
+						   onclick="queryCieloUpdateInstallments('<?php echo $type; ?>')"
+						   style="display: none;"
+						   class="validate-one-required-by-name">
+					-->
+				</label>
+			</li>
+
+<?php
+		// fecha agrupamento de bandeiras
+	//	if((($i + 1) % 3 ) == 0)
+		//{
+			
+?><!--</ul>
+		</li>-->
+<?php
+		//}
+	}
+
+?>
+<br>
+<?php
+	// dados do cartao
+	// somente mostrado em buy page loja
+	
+	if($this->getConfigData('buypage') == "loja")
+	{
+?>
+			<br>
+			<br>
+			<br>
+			<br>
+			<br>
+		<li class="card-data-form">
+			<br>
+			<label for="cielo-cc-card-number" class="required"><em>*</em><?php echo $this->__('Card Number') ?></label><br>
+			<div class="input-box">
+				<input name="payment[cc_number]" type="text" value="" id="cielo-cc-card-number" 
+					   title="<?php echo $this->__('Card Number') ?>" class="input-text required-entry validate-cc-number" 
+					   maxlength="19" onkeydown="return denyNotNumberCc(this, event);" autocomplete="off" >
+			</div>
+		</li>
+		<li class="card-data-form">
+			<label for="cielo-cc-security-code" class="required"><em>*</em><?php echo $this->__('Verification Code') ?></label><br>
+			<div class="input-box">
+				<input name="payment[cc_cid]" type="text" value="" id="cielo-cc-security-code" title="<?php echo $this->__('Verification Code') ?>" class="input-text  required-entry" style="width: 50px;" maxlength="4" onkeydown="return denyNotNumberCc(this, event);"
+				autocomplete="off">
+			</div>
+		</li>
+		<li class="card-data-form">
+			<label for="cielo-cc-card_expiration-mh" class="required"><em>*</em><?php echo $this->__('Expiration Date') ?></label>
+			<div class="input-box">
+				<div class="v-fix">
+					<select id="cielo-cc-card_expiration-mh" name="payment[cc_exp_month]" class="month required-entry" autocomplete="off">
+						<option value="" selected="selected"><?php echo $this->__('Month') ?></option>
+						<?php foreach($this->getMonths() as $month): ?>
+						<option value="<?php echo $month['num'] ?>"><?php echo $month['label'] ?></option>
+						<?php endforeach; ?>
+					</select>
+				</div>
+				<div class="v-fix">
+					<select id="cielo-cc-card_expiration-yr" name="payment[cc_exp_year]" class="year required-entry" autocomplete="off">
+						<option value="" selected="selected"><?php echo $this->__('Year') ?></option>
+						<?php foreach($this->getYears() as $year): ?>
+						<option value="<?php echo $year['num'] ?>"><?php echo $year['label'] ?></option>
+						<?php endforeach; ?>
+					</select>
+				</div>
+			</div>
+		</li>
+		<li class="card-data-form">
+			<label for="cielo-cc-card_owner" class="required"><em>*</em><?php echo $this->__('Name on Card') ?></label>
+			<div class="input-box">
+				<input type="text" title="<?php echo $this->__('Name on Card') ?>" class="input-text required-entry" id="cielo-cc-card_owner" name="payment[cc_owner]" value="" autocomplete="off">
+				<input type="hidden" name="cielo-current-cc-type" id="cielo-current-cc-type" value="">
+			</div>
+		</li>
+	<br>
+		<li class="card-data-form">
+			<label for="cielo-cc-card_owner_doc" class="required"><em>*</em><?php echo $this->__('Owner Document') ?></label>
+			<div class="input-box">
+				<input type="text" title="<?php echo $this->__('Owner Document') ?>" class="input-text required-entry" id="cielo-cc-card_owner_doc" name="payment[cc_owner_doc]" value="" autocomplete="off" onblur="return querySetCieloCcMask(event);" onkeydown="return queryCieloCcMask(event);">
+			</div>
+		</li>
+	</div>
+	
+<?php 
+		if($tokens && (count($tokens) > 0) && ($this->getConfigData('tokenize') == 1))
+		{
+?>
+		<script type="text/javascript">
+			$('card-data-cc').hide();
+		</script>
+<?php
+		}
+	}
+?>
+		<li>
+			<br>
+			<label for="cielo-installments" class="required"><em>*</em><?php echo $this->__('Installments') ?> </label>
+			<div class="input-box">
+				<select id="cielo-installments" name="payment[parcels_number]">
+					<?php foreach($this->getInstallments() as $parcel): ?>
+					<option value="<?php echo $parcel['num'] ?>"><?php echo $parcel['label'] ?></option>
+					<?php endforeach; ?>
+				</select>
+			</div>
+		</li>
+		<br>
+	</ul>
+	
+</fieldset>

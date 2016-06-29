@@ -1,0 +1,342 @@
+﻿<?xml version="1.0"?>
+
+<!--
+ * Query Commerce Cielo Module - payment method module for Magento,
+ * integrating the billing forms with a Cielo's gateway Web Service.
+ * Copyright (C) 2013  Fillipe Almeida Dutra
+ * Belo Horizonte, Minas Gerais - Brazil
+ * 
+ * Contact: lawsann@gmail.com
+ * Project link: http://code.google.com/p/magento-cielo/
+ * Group discussion: http://groups.google.com/group/cielo-magento
+ * 
+ * Team: 
+ * Fillipe Almeida Dutra - lawsann@gmail.com
+ * Hermes Luciano Monteiro Junior - hermeslmj@gmail.com
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<config>
+	<sections>
+        <payment translate="label" module="payment">
+			<groups>
+		      	<Query_Cielo_Cc translate="label">
+                
+					<label>Credit Card - Cielo - Query Commerce</label>
+					<sort_order>675</sort_order>
+					<show_in_default>1</show_in_default>
+				  	<show_in_website>1</show_in_website>
+				  	<show_in_store>1</show_in_store>
+                    
+                    <comment>
+                        <![CDATA[
+                        <div>
+                            Versão: 1.7.0<br />
+                            Este módulo foi desenvolvido por Fillipe Almeida Dutra e Hermes Luciano Monteiro Junior com incentivo da Query Commerce<br />
+							Contato: lawsann@gmail.com | hermeslmj@gmail.com
+                            <br /><br /><hr />
+                        </div>
+                        ]]>
+                    </comment>
+				  	
+					<fields>
+                    
+				      	<active translate="label">
+							<label>Enabled</label>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<sort_order>10</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+					  		<show_in_store>1</show_in_store>
+					    </active>
+						<buypage translate="label">
+							<label>Modality</label>
+							<frontend_type>select</frontend_type>
+							<source_model>Query_Cielo/adminhtml_buyPage</source_model>
+							<sort_order>20</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+					  		<show_in_store>1</show_in_store>
+					    </buypage>
+						<title translate="label">
+					  		<label>Title</label>
+					  		<frontend_type>text</frontend_type>
+					  		<sort_order>30</sort_order>
+					  		<show_in_default>1</show_in_default>
+					  		<show_in_website>1</show_in_website>
+					  		<show_in_store>1</show_in_store>
+							<comment>
+							<![CDATA[
+							<div>
+							    Título que aparecerá para o cliente
+							</div>
+							]]>
+						    </comment>
+				      	</title>
+						<softdescriptor translate="label">
+					  		<label>Soft Descriptor</label>
+					  		<frontend_type>text</frontend_type>
+					  		<sort_order>35</sort_order>
+					  		<show_in_default>1</show_in_default>
+					  		<show_in_website>1</show_in_website>
+					  		<show_in_store>1</show_in_store>
+							<comment>
+							<![CDATA[
+							<div>
+							    Mensagem que será mostrada na fatura do cliente (máximo de 13 caracteres)
+							</div>
+							]]>
+						    </comment>
+				      	</softdescriptor>
+						<environment translate="label">
+							<label>Environment</label>
+							<frontend_type>select</frontend_type>
+							<source_model>Query_Cielo/adminhtml_environment</source_model>
+							<sort_order>40</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+					  		<show_in_store>1</show_in_store>
+					    </environment>
+						<card_types translate="label">
+							<label>Card Types</label>
+							<frontend_type>multiselect</frontend_type>
+							<source_model>Query_Cielo/cc_types</source_model>
+							<sort_order>50</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+					  		<show_in_store>1</show_in_store>
+					    </card_types>
+						<auto_capture translate="label">
+							<label>Auto Capture</label>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<sort_order>60</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+					  		<show_in_store>1</show_in_store>
+					    </auto_capture>
+						<autenticate translate="label">
+							<label>Autenticate</label>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<sort_order>65</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+					  		<show_in_store>1</show_in_store>
+					    </autenticate>
+					    <tokenize>
+							<label translate="label">Allow Token Creation</label>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<sort_order>70</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+					  		<show_in_store>1</show_in_store>
+					    </tokenize>
+					    <![CDATA[
+							<div>
+							    Permitirá que os dados do cartão de crédito do cliente sejam guardados no ambiente da CIELO para agilizar compras futuras. PODERÁ OCASIONAR CUSTOS ADICIONAIS A LOJA.
+							</div>
+							]]>
+					    <order_status translate="label">
+							<label>New Order Status</label>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_order_status_new</source_model>
+					  		<sort_order>80</sort_order>
+					  		<show_in_default>1</show_in_default>
+					  		<show_in_website>1</show_in_website>
+					  		<show_in_store>1</show_in_store>
+				      	</order_status>
+						<installments_type translate="label">
+							<label>Installment Type</label>
+							<frontend_type>select</frontend_type>
+							<sort_order>90</sort_order>
+                            <source_model>Query_Cielo_Model_Cc_InstallmentType</source_model>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</installments_type>
+						<max_parcels_number translate="label">
+							<label>Max Installments</label>
+							<frontend_type>select</frontend_type>
+							<sort_order>100</sort_order>
+                            <source_model>Query_Cielo_Model_Cc_MaxInstallments</source_model>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</max_parcels_number>
+						<min_parcels_value translate="label">
+							<label>Min Installment Value</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>110</sort_order>
+                            <show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</min_parcels_value>
+						<installment_without_interest translate="label">
+							<label>Installments Without Interest</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>120</sort_order>
+                            <show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</installment_without_interest>
+						<installment_interest_value translate="label">
+							<label>Installment Interest (%)</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>130</sort_order>
+                            <show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_store>1</show_in_store>
+						</installment_interest_value>
+						<cielo_number translate="label">
+							<label>Cielo Merchant Number</label>
+					  		<frontend_type>text</frontend_type>
+					  		<sort_order>140</sort_order>
+					  		<show_in_default>1</show_in_default>
+					  		<show_in_website>1</show_in_website>
+					  		<show_in_store>1</show_in_store>
+				      	</cielo_number>
+						<cielo_key translate="label">
+							<label>Cielo Merchant Key</label>
+					  		<frontend_type>text</frontend_type>
+					  		<sort_order>150</sort_order>
+					  		<show_in_default>1</show_in_default>
+					  		<show_in_website>1</show_in_website>
+					  		<show_in_store>1</show_in_store>
+				      	</cielo_key>
+			  	     </fields>
+                </Query_Cielo_Cc>
+				
+				
+				<Query_Cielo_Dc translate="label">
+                
+					<label>Debit Card - Cielo - Query Commerce</label>
+					<sort_order>675</sort_order>
+					<show_in_default>1</show_in_default>
+				  	<show_in_website>1</show_in_website>
+				  	<show_in_store>1</show_in_store>
+                    
+                    <comment>
+                        <![CDATA[
+                        <div>
+                            Versão: 1.7.0<br />
+                            Este módulo foi desenvolvido por Fillipe Almeida Dutra e Hermes Luciano Monteiro Junior com incentivo da Query Commerce<br />
+							Contato: lawsann@gmail.com | hermeslmj@gmail.com
+                            <br /><br /><hr />
+                        </div>
+                        ]]>
+                    </comment>
+				  	
+					<fields>
+                    
+				      	<active translate="label">
+							<label>Enabled</label>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_yesno</source_model>
+							<sort_order>1</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+					  		<show_in_store>1</show_in_store>
+					    </active>
+						<buypage translate="label">
+							<label>Modality</label>
+							<frontend_type>select</frontend_type>
+							<source_model>Query_Cielo/adminhtml_buyPage</source_model>
+							<sort_order>20</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+					  		<show_in_store>1</show_in_store>
+					    </buypage>
+						<title translate="label">
+					  		<label>Title</label>
+					  		<frontend_type>text</frontend_type>
+					  		<sort_order>30</sort_order>
+					  		<show_in_default>1</show_in_default>
+					  		<show_in_website>1</show_in_website>
+					  		<show_in_store>1</show_in_store>
+							<comment>
+							<![CDATA[
+							<div>
+							    Título que aparecerá para o cliente
+							</div>
+							]]>
+						    </comment>
+				      	</title>
+						<softdescriptor translate="label">
+					  		<label>Soft Descriptor</label>
+					  		<frontend_type>text</frontend_type>
+					  		<sort_order>35</sort_order>
+					  		<show_in_default>1</show_in_default>
+					  		<show_in_website>1</show_in_website>
+					  		<show_in_store>1</show_in_store>
+							<comment>
+							<![CDATA[
+							<div>
+							    Mensagem que será mostrada na fatura do cliente (máximo de 13 caracteres)
+							</div>
+							]]>
+						    </comment>
+				      	</softdescriptor>
+						<environment translate="label">
+							<label>Environment</label>
+							<frontend_type>select</frontend_type>
+							<source_model>Query_Cielo/adminhtml_environment</source_model>
+							<sort_order>40</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+					  		<show_in_store>1</show_in_store>
+					    </environment>
+						<card_types translate="label">
+							<label>Card Types</label>
+							<frontend_type>multiselect</frontend_type>
+							<source_model>Query_Cielo/dc_types</source_model>
+							<sort_order>50</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+					  		<show_in_store>1</show_in_store>
+					    </card_types>
+					    <order_status translate="label">
+							<label>New Order Status</label>
+							<frontend_type>select</frontend_type>
+							<source_model>adminhtml/system_config_source_order_status_new</source_model>
+					  		<sort_order>70</sort_order>
+					  		<show_in_default>1</show_in_default>
+					  		<show_in_website>1</show_in_website>
+					  		<show_in_store>1</show_in_store>
+				      	</order_status>
+						<cielo_number translate="label">
+							<label>Cielo Merchant Number</label>
+					  		<frontend_type>text</frontend_type>
+					  		<sort_order>80</sort_order>
+					  		<show_in_default>1</show_in_default>
+					  		<show_in_website>1</show_in_website>
+					  		<show_in_store>1</show_in_store>
+				      	</cielo_number>
+						<cielo_key translate="label">
+							<label>Cielo Merchant Key</label>
+					  		<frontend_type>text</frontend_type>
+					  		<sort_order>90</sort_order>
+					  		<show_in_default>1</show_in_default>
+					  		<show_in_website>1</show_in_website>
+					  		<show_in_store>1</show_in_store>
+				      	</cielo_key>
+			  	     </fields>
+                </Query_Cielo_Dc>
+            </groups>
+		</payment>
+	</sections>
+</config>

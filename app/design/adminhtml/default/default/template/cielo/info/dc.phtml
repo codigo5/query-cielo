@@ -1,0 +1,316 @@
+<?php
+
+/*
+ * Query Commerce Cielo Module - payment method module for Magento,
+ * integrating the billing forms with a Cielo's gateway Web Service.
+ * Copyright (C) 2013  Fillipe Almeida Dutra
+ * Belo Horizonte, Minas Gerais - Brazil
+ * 
+ * Contact: lawsann@gmail.com
+ * Project link: http://code.google.com/p/magento-cielo/
+ * Group discussion: http://groups.google.com/group/cielo-magento
+ * 
+ * Team: 
+ * Fillipe Almeida Dutra - lawsann@gmail.com
+ * Hermes Luciano Monteiro Junior - hermeslmj@gmail.com
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+?>
+<?php echo $this->__("Debit Card"); ?>
+<br /><br />
+<?php
+	
+	
+	if($_info = $this->getInfo())
+	{
+		if($_info->getOrder())
+		{
+			$payment = $_info->getOrder()->getPayment();
+			
+			if($payment->getAdditionalInformation ('Cielo_error'))
+			{
+				echo "Erro na transação: " . $payment->getAdditionalInformation ('Cielo_error');
+			}
+			else
+			{
+				$tid = $payment->getAdditionalInformation ('Cielo_tid');
+				$status = $payment->getAdditionalInformation ('Cielo_status');
+				$cardType = $payment->getAdditionalInformation ('Cielo_cardType');
+				$installments = $payment->getAdditionalInformation ('Cielo_installments');
+				
+				$allCards = Mage::getModel('Query_Cielo/cc_types')->toArray();
+				$cardType = $allCards[$cardType];
+				$installments = ($installments == 1) ? 'à vista' : $installments . " vezes";
+				
+				$html  = "<table style='width: 100%''>";
+				$html .= "		<tr><td><b>" . $this->__("Transaction") . "</b>:</td><td>" . $tid . "</td></tr>";
+				$html .= "		<tr><td><b>" . $this->__("Status") . "</b>:</td><td>" . Mage::helper('Query_Cielo')->getStatusMessage($status) . "</td></tr>";
+				$html .= "		<tr><td><b>" . $this->__("Card Type") . "</b>:</td><td>" . $cardType . "</td></tr>";
+				$html .= "		<tr><td><b>" . $this->__("Card Number") . "</b>:</td><td> **** **** **** " . Mage::helper('core')->decrypt($payment->getCcLast4()) . "</td></tr>";
+				$html .= "		<tr><td><b>" . $this->__("Owner") . "</b>:</td><td>" . $payment->getCcOwner() . "</td></tr>";
+				$html .= "		<tr><td><b>" . $this->__("Owner Document") . "</b>:</td><td>" . $payment->getCcOwnerDoc() . "</td></tr>";
+				$html .= "</table><br />";
+				
+				echo $html;
+			}
+		}
+	}
+?>
+
+<script type="text/javascript">// <![CDATA[
+	
+	function loadCieloWebServiceData(tid, orderId)
+	{
+		var url = '<?php echo $this->getUrl('querycielo/admin/consult') ?>';
+		
+		new Ajax.Request(url,
+		{
+			method		: 'post',
+			parameters	: "tid=" + tid + "&order=" + orderId,
+			onComplete	: function(transport)
+			{
+				queryModalWindow("Dados Cielo", transport.responseText, 600, 400);
+			}
+		});
+	}
+	
+	
+	function queryModalWindow(title, content, width, height)
+	{
+		$$('HTML')[0].setStyle({overflow: 'hidden'});
+		
+		var viewport = document.viewport;
+		
+		var windowWidth = (width) ? width : 300;
+		var windowHeight = (height) ? height : 200;
+		
+		var styleWidth = width + 'px';
+		var styleHeight = height + 'px';
+		var styleTop = (viewport.getScrollOffsets()[1] + (viewport.getHeight() / 2)- (windowHeight / 2)) + 'px';
+		var styleLeftMargin = "-" +  (windowWidth / 2) + 'px';
+		
+		var windowBodyWidth = (windowWidth - 80) + 'px';
+		var windowBodyHeight = (windowHeight - 50) + 'px';
+		
+		// mascara que cobre o fundo da tela
+		var mask = document.createElement("div");
+		mask.id = 'query-page-mask';
+		mask.setStyle
+		({
+			'width'					: viewport.getWidth() + "px",
+			'height'				: viewport.getHeight() + "px",
+			'position'				: 'absolute',
+			'zIndex'				: '9000',
+			'backgroundColor'		: '#333333',
+			'top'					: viewport.getScrollOffsets()[1] + 'px',
+			'left'					: '0',
+			'display'				: 'none'
+		});
+		
+		
+		// janela modal
+		var modalWindow = document.createElement("div");
+		modalWindow.id = 'query-modal-window';
+		$(modalWindow).setStyle
+		({
+			'width'					: styleWidth,
+			'height'				: styleHeight,
+			'top'					: styleTop,
+			'marginLeft'			: styleLeftMargin,
+			'position'				: 'absolute',
+			'zIndex'				: '9001',
+			'backgroundColor'		: 'transparent',
+			'left'					: '50%',
+			'display'				: 'none',
+			'color'					: '#333333',
+			'fontSize'				: '11px'
+		});
+		
+		// tabela que monta o layout da janela
+		var windowStructure = document.createElement("table");
+		var tableBody = document.createElement("tbody");
+		
+		windowStructure.cellPadding = '0';
+		windowStructure.cellSpacing = '0';
+		windowStructure.border = '0';
+		
+		var tr1WindowStructure = document.createElement("tr");
+		var tr2WindowStructure = document.createElement("tr");
+		var tr3WindowStructure = document.createElement("tr");
+		
+		var td11WindowStructure = document.createElement("td");
+		var td12WindowStructure = document.createElement("td");
+		var td13WindowStructure = document.createElement("td");
+		var td21WindowStructure = document.createElement("td");
+		var td22WindowStructure = document.createElement("td");
+		var td23WindowStructure = document.createElement("td");
+		var td31WindowStructure = document.createElement("td");
+		var td32WindowStructure = document.createElement("td");
+		var td33WindowStructure = document.createElement("td");
+		
+		var leftUpCorner = document.createElement("div");
+		$(leftUpCorner).setStyle
+		({
+			'height'				: '10px',
+			'width'					: '10px',
+			'backgroundImage'		: 'url(\'<?php echo $this->getSkinUrl() . "images/cielo/window/"; ?>top_left.png\')'
+		});
+		td11WindowStructure.appendChild(leftUpCorner);
+		
+		$(td12WindowStructure).setStyle
+		({
+			'height'				: '10px',
+			'width'					:  (windowWidth - 20) + 'px',
+			'backgroundColor'		: '#333333'
+		});
+		
+		var rightUpCorner = document.createElement("div");
+		$(rightUpCorner).setStyle
+		({
+			'height'				: '10px',
+			'width'					: '10px',
+			'backgroundImage'		: 'url(\'<?php echo $this->getSkinUrl() . "images/cielo/window/"; ?>top_right.png\')'
+		});
+		td13WindowStructure.appendChild(rightUpCorner);
+		
+		$(td21WindowStructure).setStyle
+		({
+			'height'				: (windowHeight - 20) + 'px',
+			'width'					:  '10px',
+			'backgroundColor'		: '#333333'
+		});
+		
+		$(td22WindowStructure).setStyle
+		({
+			'backgroundColor'		: '#FFFFFF'
+		});
+		
+		$(td23WindowStructure).setStyle
+		({
+			'height'				: (windowHeight - 20) + 'px',
+			'width'					:  '10px',
+			'backgroundColor'		: '#333333'
+		});
+		
+		$(td31WindowStructure).setStyle
+		({
+			'height'				: '10px',
+			'width'					: '10px',
+			'backgroundImage'		: 'url(\'<?php echo $this->getSkinUrl() . "images/cielo/window/"; ?>bottom_left.png\')'
+		});
+		
+		$(td32WindowStructure).setStyle
+		({
+			'height'				: '10px',
+			'width'					:  (windowWidth - 20) + 'px',
+			'backgroundColor'		: '#333333'
+		});
+		
+		$(td33WindowStructure).setStyle
+		({
+			'height'				: '10px',
+			'width'					: '10px',
+			'backgroundImage'		: 'url(\'<?php echo $this->getSkinUrl() . "images/cielo/window/"; ?>bottom_right.png\')'
+		});
+		
+		tr1WindowStructure.appendChild(td11WindowStructure);
+		tr1WindowStructure.appendChild(td12WindowStructure);
+		tr1WindowStructure.appendChild(td13WindowStructure);
+		tr2WindowStructure.appendChild(td21WindowStructure);
+		tr2WindowStructure.appendChild(td22WindowStructure);
+		tr2WindowStructure.appendChild(td23WindowStructure);
+		tr3WindowStructure.appendChild(td31WindowStructure);
+		tr3WindowStructure.appendChild(td32WindowStructure);
+		tr3WindowStructure.appendChild(td33WindowStructure);
+		
+		tableBody.appendChild(tr1WindowStructure);
+		tableBody.appendChild(tr2WindowStructure);
+		tableBody.appendChild(tr3WindowStructure);
+		
+		windowStructure.appendChild(tableBody);
+		
+		modalWindow.appendChild(windowStructure);
+		
+		// monta estrutura html
+		var windowHeader = document.createElement("div");
+		windowHeader.setStyle
+		({
+			'height'				: '38px',
+			'width'					: '100%',
+			'position'				: 'relative',
+			'backgroundImage'		: 'url(\'<?php echo $this->getSkinUrl() . "images/cielo/window/"; ?>header.png\')',
+			'backgroundRepeat'		: 'repeat-x'
+		});
+		
+		var titleDiv = document.createElement('div');
+		titleDiv.setStyle
+		({
+			'position'				: 'absolute',
+			'top'					: '8px',
+			'left'					: '10px',
+			'color'					: '#FFFFFF',
+			'fontSize'				: '12px',
+			'fontWeight'			: 'bold'
+		});
+		$(titleDiv).update(title);
+		
+		var closeButton = document.createElement('div');
+		closeButton.setStyle
+		({
+			'position'				: 'absolute',
+			'width'					: '16px',
+			'height'				: '16px',
+			'top'					: '8px',
+			'right'					: '5px',
+			'cursor'				: 'pointer',
+			'backgroundImage'		: 'url(\'<?php echo $this->getSkinUrl() . "images/cielo/window/"; ?>close.png\')',
+		});
+		
+		var windowBody = document.createElement("div");
+		windowBody.setStyle
+		({
+			'width'					: '100%',
+			'position'				: 'relative',
+			'padding'				: '15px',
+			'color'					: '#333333',
+			'fontSize'				: '12px',
+			'height'				: windowHeight + "px",
+			'width'					: windowWidth + "px", 
+			'overflow'				: 'auto'
+		});
+		$(windowBody).update(content);
+		
+		windowHeader.appendChild(titleDiv);
+		windowHeader.appendChild(closeButton);
+		td22WindowStructure.appendChild(windowHeader);
+		td22WindowStructure.appendChild(windowBody);
+		
+		document.body.appendChild(mask);
+		document.body.appendChild(modalWindow);
+		
+		$(mask).appear({ duration: 0.2, from: 0, to: 0.5 });
+		$(modalWindow).appear({ duration: 0.2, from: 0, to: 1 });
+		
+		$(closeButton).observe('click', function()
+		{
+			document.body.removeChild(mask);
+			document.body.removeChild(modalWindow);
+			$$('HTML')[0].setStyle({overflow: 'auto'});
+		});
+		
+		
+	}
+// ]]></script>

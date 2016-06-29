@@ -1,0 +1,9 @@
+app/code/community/Query/Cielo app/code/community/Query/Cielo
+app/design/adminhtml/default/default/template/cielo app/design/adminhtml/default/default/template/cielo
+app/design/frontend/base/default/layout/*.xml app/design/frontend/base/default/layout/
+app/design/frontend/base/default/template/cielo app/design/frontend/base/default/template/cielo
+app/etc/modules/*.xml app/etc/modules/
+app/locale/pt_BR/*.csv app/locale/pt_BR/
+js/query/cielo js/query/cielo
+skin/adminhtml/default/default/images/cielo skin/adminhtml/default/default/images/cielo
+skin/frontend/default/default/images/cielo skin/frontend/default/default/images/cielo
