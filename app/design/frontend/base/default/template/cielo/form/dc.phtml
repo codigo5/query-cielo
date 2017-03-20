@@ -5,15 +5,15 @@
  * integrating the billing forms with a Cielo's gateway Web Service.
  * Copyright (C) 2013  Fillipe Almeida Dutra
  * Belo Horizonte, Minas Gerais - Brazil
- * 
+ *
  * Contact: lawsann@gmail.com
  * Project link: http://code.google.com/p/magento-cielo/
  * Group discussion: http://groups.google.com/group/cielo-magento
- * 
- * Team: 
+ *
+ * Team:
  * Fillipe Almeida Dutra - lawsann@gmail.com
  * Hermes Luciano Monteiro Junior - hermeslmj@gmail.com
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -33,7 +33,7 @@
 	$baseUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN) . "frontend/default/default/images/cielo/";
 ?>
 <style>
-	
+
 	.card-type-image
 	{
 		width: 52px;
@@ -42,7 +42,7 @@
 		cursor: pointer;
 		padding: 2px;
 	}
-	
+
 	.card-type-image:hover
 	{
 		-webkit-border-radius: 5px;
@@ -51,7 +51,7 @@
 		border: 2px solid #C2D1E2;
 		background-color: #F1F4F8;
 	}
-	
+
 	.card-type-image.selected
 	{
 		-webkit-border-radius: 5px;
@@ -60,7 +60,7 @@
 		border: 2px solid #C2D1E2;
 		background-color: #F1F4F8;
 	}
-	
+
 	.card-data-form
 	{
 		display: none;
@@ -69,20 +69,23 @@
 
 <fieldset class="form-list">
 	<ul id="payment_form_Query_Cielo_Dc" style="display:none;">
-		<br />
-	
+		<div id='card-data-dc'>
+			<div class="card-flag-tip">
+				<span><?php echo $this->__("Select the flag"); ?></span>
+			</div>
+
 <?php
-	
+
 	$cardsData = $this->getAllowedCards();
-	
+
 	$size = count($cardsData);
-	
+
 	for($i = 0; $i < $size; $i++)
 	{
 		$value = $cardsData[$i]['value'];
 		$label = $cardsData[$i]['label'];
 		$img = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN) . "frontend/default/default/images/cielo/" . $cardsData[$i]['image'];
-		
+
 		// abre agrupamento de bandeiras
 		if($i % 3 == 0)
 		{
@@ -91,12 +94,12 @@
 		<ul class="card-logo">
 <?php
 		}
-		
+
 		// bandeira em questao
 ?>
 			<li style="width: 70px; float: left;">
 				<label for="card-<?php echo $value; ?>">
-					<img class="card-type-image" ccType="<?php echo $value; ?>" src="<?php echo $img; ?>" title="<?php echo $label; ?>" onclick="selectCardTypeDc(this); showCardDataDc(true);" /><br>
+					<img class="card-type-image" ccType="<?php echo $value; ?>" src="<?php echo $img; ?>" title="<?php echo $label; ?>" onclick="selectCardTypeDc(this); showCardDataDc(true);" />
 					<!--
 					<input name="payment[dc_type]" type="radio" value="<?php echo $value; ?>" id="card-<?php echo $value; ?>" 		style = "display: none;"
 							value="<?php echo $value; ?>"
@@ -112,34 +115,34 @@
 ?>
 		</ul>
 		</li>
-		<div id='card-data-dc'>
-		<input name="payment[dc_type]" 
+
+		<input name="payment[dc_type]"
 			   type="hidden"
 			   id="query-cielo-dc-type"
 			   class="required-entry" />
 <?php
 		}
 	}
-	
+
 	// dados do cartao
 	// somente mostrado em buy page loja
-	
+
 	if($this->getConfigData('buypage') == "loja")
 	{
 ?>
 		<li class="card-data-form">
-			<label for="cielo-dc-card-number" class="required"><em>*</em><?php echo $this->__('Card Number') ?></label><br />
+			<label for="cielo-dc-card-number" class="required"><em>*</em><?php echo $this->__('Card Number') ?></label>
 			<div class="input-box">
-				<input name="payment[dc_number]" type="text" value="" id="cielo-dc-card-number" 
-					   title="<?php echo $this->__('Card Number') ?>" class="input-text required-entry validate-cc-number" 
+				<input name="payment[dc_number]" type="text" value="" id="cielo-dc-card-number"
+					   title="<?php echo $this->__('Card Number') ?>" class="input-text required-entry validate-cc-number"
 					   maxlength="16" onkeydown="return denyNotNumberDc(this, event);" autocomplete="off" />
 			</div>
 		</li>
 		<li class="card-data-form">
-			<label for="cielo-dc-security-code" class="required"><em>*</em><?php echo $this->__('Verification Code') ?></label><br />
+			<label for="cielo-dc-security-code" class="required"><em>*</em><?php echo $this->__('Verification Code') ?></label>
 			<div class="input-box">
-				<input name="payment[dc_cid]" type="text" value="" id="cielo-dc-security-code" 
-					   title="<?php echo $this->__('Verification Code') ?>" class="input-text  required-entry" 
+				<input name="payment[dc_cid]" type="text" value="" id="cielo-dc-security-code"
+					   title="<?php echo $this->__('Verification Code') ?>" class="input-text  required-entry"
 					   style="width: 50px;" maxlength="4" onkeydown="return denyNotNumberDc(this, event);" autocomplete="off" />
 			</div>
 		</li>
@@ -178,10 +181,10 @@
 			</div>
 		</li>
 	</div>
-	
+
 <?php
 	}
 ?>
-		<br />
+
 	</ul>
 </fieldset>
