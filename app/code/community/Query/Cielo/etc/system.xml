@@ -5,15 +5,15 @@
  * integrating the billing forms with a Cielo's gateway Web Service.
  * Copyright (C) 2013  Fillipe Almeida Dutra
  * Belo Horizonte, Minas Gerais - Brazil
- * 
+ *
  * Contact: lawsann@gmail.com
  * Project link: http://code.google.com/p/magento-cielo/
  * Group discussion: http://groups.google.com/group/cielo-magento
- * 
- * Team: 
+ *
+ * Team:
  * Fillipe Almeida Dutra - lawsann@gmail.com
  * Hermes Luciano Monteiro Junior - hermeslmj@gmail.com
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -33,24 +33,24 @@
         <payment translate="label" module="payment">
 			<groups>
 		      	<Query_Cielo_Cc translate="label">
-                
+
 					<label>Credit Card - Cielo - Query Commerce</label>
 					<sort_order>675</sort_order>
 					<show_in_default>1</show_in_default>
 				  	<show_in_website>1</show_in_website>
 				  	<show_in_store>1</show_in_store>
-                    
+
                     <comment>
                         <![CDATA[
                         <div>
-                            Versão: 1.8.0<br />
+                            Versão: 1.9.0<br />
                             Este módulo foi desenvolvido por Fillipe Almeida Dutra e Hermes Luciano Monteiro Junior com incentivo da Query Commerce<br />
 							Contato: lawsann@gmail.com | hermeslmj@gmail.com
                             <br /><br /><hr />
                         </div>
                         ]]>
                     </comment>
-				  	
+
 					<fields>
 
                         <sort_order translate="label">
@@ -229,27 +229,27 @@
 				      	</cielo_key>
 			  	     </fields>
                 </Query_Cielo_Cc>
-				
-				
+
+
 				<Query_Cielo_Dc translate="label">
-                
+
 					<label>Debit Card - Cielo - Query Commerce</label>
 					<sort_order>675</sort_order>
 					<show_in_default>1</show_in_default>
 				  	<show_in_website>1</show_in_website>
 				  	<show_in_store>1</show_in_store>
-                    
+
                     <comment>
                         <![CDATA[
                         <div>
-                            Versão: 1.8.0<br />
+                            Versão: 1.9.0<br />
                             Este módulo foi desenvolvido por Fillipe Almeida Dutra e Hermes Luciano Monteiro Junior com incentivo da Query Commerce<br />
 							Contato: lawsann@gmail.com | hermeslmj@gmail.com
                             <br /><br /><hr />
                         </div>
                         ]]>
                     </comment>
-				  	
+
 					<fields>
 
 						<sort_order translate="label">

@@ -5,15 +5,15 @@
  * integrating the billing forms with a Cielo's gateway Web Service.
  * Copyright (C) 2013  Fillipe Almeida Dutra
  * Belo Horizonte, Minas Gerais - Brazil
- * 
+ *
  * Contact: lawsann@gmail.com
  * Project link: http://code.google.com/p/magento-cielo/
  * Group discussion: http://groups.google.com/group/cielo-magento
- * 
- * Team: 
+ *
+ * Team:
  * Fillipe Almeida Dutra - lawsann@gmail.com
  * Hermes Luciano Monteiro Junior - hermeslmj@gmail.com
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -29,13 +29,13 @@
  -->
 
 <config>
-	
+
 	<modules>
 		<Query_Cielo>
-			<version>1.8.0</version>
+			<version>1.9.0</version>
 		</Query_Cielo>
 	</modules>
-	
+
 	<global>
 		<models>
 			<Query_Cielo>
@@ -142,7 +142,7 @@
 			</core_block_abstract_prepare_layout_before>
 		</events>
 	</global>
-	
+
 	<frontend>
 		<routers>
 			<Query_Cielo>
@@ -180,7 +180,7 @@
 					</args>
 			</Query_Cielo>
 		</routers>
-	</admin> 
+	</admin>
 	<adminhtml>
 		<translate>
 			<modules>
@@ -243,8 +243,8 @@
 			</resources>
 		</acl>
 	</adminhtml>
-	
-	
+
+
 	<default>
 		<payment>
 			<Query_Cielo_Cc>
