@@ -246,7 +246,7 @@
 				<input type="text" title="<?php echo $this->__('Owner Document') ?>" class="input-text required-entry" id="cielo-cc-card_owner_doc" name="payment[cc_owner_doc]" value="" autocomplete="off" onblur="return querySetCieloCcMask(event);" onkeydown="return queryCieloCcMask(event);">
 			</div>
 		</li>
-
+	</div>
 
 <?php
 		if($tokens && (count($tokens) > 0) && ($this->getConfigData('tokenize') == 1))
@@ -259,18 +259,17 @@
 		}
 	}
 ?>
-			<li class="card-data-installments">
+		<li class="card-data-installments">
 
-				<label for="cielo-installments" class="required"><em>*</em><?php echo $this->__('Installments') ?> </label>
-				<div class="input-box">
-					<select id="cielo-installments" name="payment[parcels_number]">
-						<?php foreach($this->getInstallments() as $parcel): ?>
-						<option value="<?php echo $parcel['num'] ?>"><?php echo $parcel['label'] ?></option>
-						<?php endforeach; ?>
-					</select>
-				</div>
-			</li>
-		</div>
+			<label for="cielo-installments" class="required"><em>*</em><?php echo $this->__('Installments') ?> </label>
+			<div class="input-box">
+				<select id="cielo-installments" name="payment[parcels_number]">
+					<?php foreach($this->getInstallments() as $parcel): ?>
+					<option value="<?php echo $parcel['num'] ?>"><?php echo $parcel['label'] ?></option>
+					<?php endforeach; ?>
+				</select>
+			</div>
+		</li>
 	</ul>
 
 </fieldset>
