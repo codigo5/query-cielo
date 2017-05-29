@@ -1,7 +1,7 @@
 {
   "name": "codigo5/query-cielo",
   "type": "magento-module",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "description": "Cielo payment gateway for Magento.",
   "require": {
     "php": ">=5.4"
