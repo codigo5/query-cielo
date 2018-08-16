@@ -478,7 +478,7 @@ class Query_Cielo_Model_WebServiceOrder
 		
 		curl_setopt($curl_session, CURLOPT_URL, $this->_webServiceURL);
 		curl_setopt($curl_session, CURLOPT_FAILONERROR, true);
-		curl_setopt($curl_session, CURLOPT_SSL_VERIFYPEER, true);
+		curl_setopt($curl_session, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($curl_session, CURLOPT_SSL_VERIFYHOST, 2);
 		curl_setopt($curl_session, CURLOPT_CAINFO, $this->_SSLCertificatePath);
 		curl_setopt($curl_session, CURLOPT_SSLVERSION, $this->_sslVersion);
