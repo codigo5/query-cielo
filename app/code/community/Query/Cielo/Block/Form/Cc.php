@@ -106,7 +106,7 @@ class Query_Cielo_Block_Form_Cc extends Mage_Payment_Block_Form
 		$interestValue = floatval(Mage::getStoreConfig('payment/Query_Cielo_Cc/installment_interest_value'));
 		
 		// pega valores do pedido
-		$total = Mage::getSingleton('checkout/cart')->getQuote()->getGrandTotal();
+		$total = Mage::getSingleton('checkout/cart')->getQuote()->getSubtotal();
 		
 		$installments = array();
 		
